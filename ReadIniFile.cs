@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace saga.file
 {
 	// やっつけのINIファイルリーダー
-	class ReadIniFile
+	public class ReadIniFile
 	{
 		// UDPポート
 		private int port;
@@ -49,7 +49,7 @@ namespace saga.file
 				iniFilePath); // iniファイルパス
 			if (sb.ToString().Equals("NONE"))
 			{
-				throw new NullReferenceException("IniFileにキー名「PORT」が設定されていません。");
+				//throw new NullReferenceException("IniFileにキー名「PORT」が設定されていません。");
 			}
 			else
 			{
