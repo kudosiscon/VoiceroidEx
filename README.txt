@@ -33,7 +33,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 	## 「VOICEROID」のウィンドウタイトル名
 	## デフォルトは結月ゆかり
-	MAIN_WINDOW_NAME
+	MAIN_WINDOW_NAME=VOICEROID＋ 結月ゆかり
 
 	## 保存ダイアログのウィンドウタイトル名
 	SAVE_WINDOW_NAME=音声ファイルの保存
@@ -49,18 +49,28 @@ http://www.apache.org/licenses/LICENSE-2.0
 	「VOICEROID」を起動した状態でVoiceroidExを起動する
 	コマンドプロンプトから起動
 		$msg
-		:$msgを再生する
+		 :$msgを再生する
 		
 		$msg $path
-		:$msgの音声ファイルを$pathに出力する
+		 :$msgの音声ファイルを$pathに出力する
 
 
 	コマンド例：
 		ゆかりさんまじ天使
-		:音声再生
-
+		 :音声再生
 		Twitterからお知らせ C:\a
-		:音声ファイルを C:\a に保存(ファイルはa.wav、a.txtが作成される)
+		 :音声ファイルを C:\a に保存(ファイルはa.wav、a.txtが作成される)
+
+
+開発者の方へ
+Ver1.1よりメイン機能をライブラリ化しましたので、
+コマンドラインから操作するだけでは足りない方は
+VoiceroidNotify.dllを参照に追加して
+VoiceroidEx/VoiceroidEx.cs
+を参考にして組み込んでもらって構いません。
+
+現状のままではVOICEROIDの設定が一人しか出来ない等
+拡張性に乏しいので、、、
 
 
 バージョン

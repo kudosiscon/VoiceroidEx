@@ -1,70 +1,48 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.Runtime.InteropServices;
 
-using saga.file;
+using saga.util;
 
 namespace saga.voiceroid
 {
-    class VoiceroidEx
-    {
-		[STAThread]
-		static void Main(string[] args)
-		{
-            try
-			{
-				// 引数多すぎ
-				if (args.Length < 1 || 2 < args.Length)
-				{
-					throw new ArgumentException("引数を確認してください");
-				}
-				// やっつけINIファイルリーダー
-				saga.file.ReadIniFile ri;
-				try
-				{
-					// セッション[VOICEROID]を優先読み込み
-					ri = new ReadIniFile("set.ini", "VOICEROID");
-				}
-				catch (Exception e)
-				{
-					// セッション[DEFAULT]を読み込み
-					ri = new ReadIniFile("set.ini", "DEFAULT");
-				}
-				// インスタンス化
-				VoiceroidNotify voiceroid = new VoiceroidNotify4Win7();
-				voiceroid.SetVoiceroidWindowTitle(ri.GetMainWindowName());
-				voiceroid.SetSaveWindowTitle(ri.GetSaveWindowName());
-				voiceroid.SetForceOverWriteFlag(ri.GetForceOverWriteFlag());
-				// デバッグ表示フラグ設定
-				voiceroid.SetDebugFlag(ri.GetDebugFlag());
-
-				// 音声テキストをテキストボックスに設定
-				voiceroid.SetPlayText(args[0]);
-
-				// 起動引数1: 音声を再生
-				if (args.Length == 1)
-				{
-					voiceroid.Play();
-				}
-				// 起動引数2: 音声ファイルを保存
-				else if (args.Length == 2)
-				{
-                    voiceroid.SaveVoice(args[1]);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.WriteLine("エラーが発生しました");
-				Console.WriteLine("何かキーを押してください");
-				Console.ReadLine();
-			}
-		}
-    }
-
-}
-uint timeout,
+	/*
+	 * Voiceroidコマンドライン拡張
+	 * @author saga(@saga_dash)
+	 */
+	public abstract class VoiceroidNotify
+	{
+		[DllImport("user32.dll", EntryPoint = "SendMessage")]
+		protected static extern IntPtr SendMessage(IntPtr hWnd, IntPtr Msg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll", EntryPoint = "SendMessage")]
+		protected static extern IntPtr SendMessage(IntPtr hWnd, IntPtr Msg, IntPtr wParam, string lParam);
+		[DllImport("user32.dll", EntryPoint = "PostMessage")]
+		protected static extern IntPtr PostMessage(IntPtr hWnd, IntPtr Msg, IntPtr wParam, IntPtr lParam);
+		[DllImport("user32.dll", EntryPoint = "PostMessage")]
+		protected static extern IntPtr PostMessage(IntPtr hWnd, IntPtr Msg, IntPtr wParam, string lParam);
+		[DllImport("user32.dll", EntryPoint = "SetFocus")]
+		protected static extern IntPtr SetFocus(IntPtr hWnd);
+		[DllImport("user32.dll", EntryPoint = "SetWindowText")]
+		protected static extern Boolean SetWindowText(IntPtr hWnd, string lpString);
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		protected static extern IntPtr SendMessageTimeout(
+			IntPtr windowHandle,
+			uint Msg,
+			IntPtr wParam,
+			string lParam,
+			SendMessageTimeoutFlags flags,
+			uint timeout,
+			out IntPtr result);
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		protected static extern IntPtr SendMessageTimeout(
+			IntPtr windowHandle,
+			uint Msg,
+			IntPtr wParam,
+			IntPtr lParam,
+			SendMessageTimeoutFlags flags,
+			uint timeout,
 			out IntPtr result);
 
 		protected enum SendMessageTimeoutFlags : uint
@@ -98,7 +76,7 @@ uint timeout,
 		/*
 		 * コンストラクタ
 		 */
-		public VoiceroidEx()
+		public VoiceroidNotify()
 		{
 			this.VOICEROID_TITLE = "VOICEROID＋ 結月ゆかり";
 			this.SAVE_WINDOW_TITLE = "音声ファイルの保存";
@@ -135,16 +113,6 @@ uint timeout,
 		public void SetDebugFlag(bool flag)
 		{
 			debugFlag = flag;
-		}
-		// デバッグ
-		protected void DebugWriteLine(String message)
-		{
-			Debug.WriteLine("###############");
-			Debug.WriteLine(message);
-			Debug.WriteLine("###############");
-			PrintDebug("###############");
-			PrintDebug(message);
-			PrintDebug("###############");
 		}
 		// コンソール表示用
 		public static void PrintDebug(string str)
@@ -246,113 +214,6 @@ uint timeout,
 		}
 
 
-		[STAThread]
-		static void Main(string[] args)
-		{
-			try
-			{
-				// 引数多すぎ
-				if (3 <= args.Length)
-				{
-					throw new ArgumentException("引数を確認してください");
-				}
-				// やっつけINIファイルリーダー
-				saga.file.ReadIniFile ri;
-				try
-				{
-					// セッション[VOICEROID]を優先読み込み
-					ri = new ReadIniFile("set.ini", "VOICEROID");
-				}
-				catch (Exception e)
-				{
-					// セッション[DEFAULT]を読み込み
-					ri = new ReadIniFile("set.ini", "DEFAULT");
-				}
-				// インスタンス化
-				VoiceroidEx voiceroid = new VoiceroidEx4Win7();
-				voiceroid.SetVoiceroidWindowTitle(ri.GetMainWindowName());
-				voiceroid.SetSaveWindowTitle(ri.GetSaveWindowName());
-				voiceroid.SetForceOverWriteFlag(ri.GetForceOverWriteFlag());
-				// デバッグ表示フラグ設定
-				voiceroid.SetDebugFlag(ri.GetDebugFlag());
-
-				// 起動引数0: UDPサーバ起動
-				if (args.Length == 0)
-				{
-					// 文字エンコードを設定 default:UTF8
-					System.Text.Encoding enc = System.Text.Encoding.UTF8;
-					// 受付ポートを設定
-					System.Net.Sockets.UdpClient udp = new System.Net.Sockets.UdpClient(ri.GetPort());
-
-					while (true)
-					{
-						// 初期化
-						System.Net.IPEndPoint remoteEP = null;
-						// 受付待機
-						byte[] rcvBytes = udp.Receive(ref remoteEP);
-						// 文字列をエンコード
-						string rcvMsg = enc.GetString(rcvBytes);
-
-						PrintDebug("-----------------");
-						PrintDebug("RecvData :" + rcvMsg);
-						PrintDebug("SendAdd  :" + remoteEP.Address);
-						PrintDebug("SendPort :" + remoteEP.Port);
-						PrintDebug("-----------------");
-
-						string exitStr = "--EXIT";
-						if (rcvMsg.IndexOf(exitStr) == 0 && rcvMsg.Length == exitStr.Length)
-						{
-							return;
-						}
-
-						// オプション -filePath #filePath# を受信した場合、音声
-						int index;
-						string str = " -filePath ";
-						if ((index = rcvMsg.IndexOf(str)) != -1)
-						{
-							// パス切り出し
-							int length = rcvMsg.Length - index - str.Length;
-							string filePath = rcvMsg.Substring(index + str.Length, length);
-							// 音声テキスト切り出し
-							rcvMsg = rcvMsg.Substring(0, index);
-
-							// 音声テキストをテキストボックスに設定
-							voiceroid.SetPlayText(rcvMsg);
-							// 音声ファイルを保存
-							voiceroid.SaveVoice(filePath);
-							continue;
-						}
-
-						// 音声テキストをテキストボックスに設定
-						voiceroid.SetPlayText(rcvMsg);
-						// 再生
-						voiceroid.Play();
-						// 処理終了を送信
-						udp.Send(rcvBytes, rcvBytes.Length, remoteEP.Address.ToString(), remoteEP.Port);
-					}
-				}
-				// 音声テキストをテキストボックスに設定
-				voiceroid.SetPlayText(args[0]);
-
-				// 起動引数1: 音声を再生
-				if (args.Length == 1)
-				{
-					voiceroid.Play();
-				}
-				// 起動引数2: 音声ファイルを保存
-				else if (args.Length == 2)
-				{
-					voiceroid.SaveVoice(args[1]);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.WriteLine("エラーが発生しました");
-				Console.WriteLine("何かキーを押してください");
-				Console.ReadLine();
-			}
-		}
 	}
 
 }
