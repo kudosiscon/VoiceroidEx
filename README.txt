@@ -25,7 +25,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 
 事前設定
-	set.iniを実行ファイルと同じ階層に置く
+	set.ini と VoiceroidNotify.dllを実行ファイルと同じ階層に置く
 	set.iniの設定内容は以下のとおり
 
 	## 設定セクション、[DEFAULT]は修正用に変更しないことを推奨
