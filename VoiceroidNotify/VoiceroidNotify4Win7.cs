@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using saga.util;
@@ -11,6 +11,7 @@ namespace saga.voiceroid
 	 */
 	public class VoiceroidNotify4Win7 : VoiceroidNotify
 	{
+        private static String talkString="";
 		public VoiceroidNotify4Win7() : base() { }
 		protected override IntPtr GetPlayButtonHandle(List<IntPtr> hWndList)
 		{
@@ -60,13 +61,22 @@ namespace saga.voiceroid
 
 			// テキストをクリップボードに格納
 			System.Threading.Thread.Sleep(100);
-			int retryTimes = 3;
-			int retryDelay = 100;
-			System.Windows.Forms.Clipboard.SetDataObject(talkStr, true, retryTimes, retryDelay);
-			System.Threading.Thread.Sleep(100);
+            talkString = talkStr;
+            System.Threading.Thread t = new System.Threading.Thread(SetClipboard);
+            t.SetApartmentState(System.Threading.ApartmentState.STA);
+            t.Start();
+            t.Join();
+            System.Threading.Thread.Sleep(100);
 			// メインウィンドウにコマンドを送りテキストを貼り付け
 			return SendMessageSub(hWndMain, WM_COMMAND, PASTE, WM_NULL);
 		}
+        static void SetClipboard()
+        {
+            bool copy = true;
+            int retryTimes = 100;
+            int retryDelay=100;
+            System.Windows.Forms.Clipboard.SetDataObject(talkString, copy, retryTimes, retryDelay);
+        }
 		public override IntPtr Play()
 		{
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);

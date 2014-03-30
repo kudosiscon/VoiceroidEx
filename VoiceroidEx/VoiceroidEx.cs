@@ -9,7 +9,6 @@ namespace saga.voiceroid
 {
     class VoiceroidEx
     {
-		[STAThread]
 		static void Main(string[] args)
 		{
             try
