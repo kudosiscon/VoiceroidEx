@@ -73,7 +73,6 @@ namespace saga.util
 			if (hWnd.Equals((IntPtr)0))
 			{
 				string str = "\"" + windowName + "\"は起動していません";
-				Console.WriteLine(str);
 				throw new ApplicationException(str);
 			}
 			GCHandle listHandle = GCHandle.Alloc(hWndList);
