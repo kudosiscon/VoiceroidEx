@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using saga.util;
+using NMeCab;
 
 namespace saga.voiceroid
 {
@@ -87,9 +88,47 @@ namespace saga.voiceroid
 			PrintDebug("----------");
 
 			// VOCEROID ハングアップ用にTimeout設定し再生ボタン押
-			return SendMessageSub(hTalkButton, WM_NULL, WM_NULL, WM_NULL);
-
+            IntPtr result =  SendMessageSub(hTalkButton, WM_NULL, WM_NULL, WM_NULL);
+            System.Threading.Thread.Sleep(getInterval(talkString));
+            return result;
 		}
+        private int getInterval(String str)
+        {
+            return getHiraganaLength(str) * 140;
+        }
+        private int getHiraganaLength(String str)
+        {
+            return getHiragana(str).Length;
+        }
+        private String getHiragana(String str)
+        {
+            MeCabParam param = new MeCabParam();
+            param.DicDir = "dic/ipadic";
+            MeCabTagger tagger = MeCabTagger.Create(param);
+            MeCabNode node = tagger.ParseToNode(str);
+            String hiragana = "";
+            while (node != null)
+            {
+                if (node.CharType > 0)
+                {
+                    //PrintDebug(node.Surface + "/t" + node.Feature);
+                    String[] splitStrArray = node.Feature.Split(',');
+                    String splitStr;
+                    if (splitStrArray.Length < 9)
+                    {
+                        splitStr = node.Surface;
+                    }
+                    else
+                    {
+                        splitStr = splitStrArray[7];
+                    }
+                    hiragana = hiragana+ splitStr;
+                }
+                node = node.Next;
+            }
+            PrintDebug(hiragana);
+            return hiragana;
+        }
 		protected override IntPtr SaveVoiceImpl(String pathStr)
 		{
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
