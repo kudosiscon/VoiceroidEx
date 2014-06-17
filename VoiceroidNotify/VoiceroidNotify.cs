@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using saga.util;
+using NMeCab;
 
 namespace saga.voiceroid
 {
@@ -72,17 +73,21 @@ namespace saga.voiceroid
 		protected static bool forceOverWriteFlag;
 		// デバッグフラグ
 		protected static bool debugFlag;
+        // LibNMeCab辞書のパス
+        protected String dicPathFromExe;// = "dic/ipadic";
 
 		/*
 		 * コンストラクタ
 		 */
-		public VoiceroidNotify()
-		{
+		public VoiceroidNotify():this("dic/ipadic") { }
+        public VoiceroidNotify(String dicPathFromExe)
+        {
 			this.VOICEROID_TITLE = "VOICEROID＋ 結月ゆかり";
 			this.SAVE_WINDOW_TITLE = "音声ファイルの保存";
 			forceOverWriteFlag = false;
 			debugFlag = false;
-		}
+            this.dicPathFromExe = dicPathFromExe;
+        }
 		/*
 		 * メインウィンドウ名の設定
 		 * @param voiceroidWindowTitle メインウィンドウ名
@@ -107,13 +112,22 @@ namespace saga.voiceroid
 		{
 			forceOverWriteFlag = flag;
 		}
-		/* デバッグ表示ON
+		/*
+         * デバッグ表示ON
 		 * @param flag デバッグ表示フラグ
 		 */
 		public void SetDebugFlag(bool flag)
 		{
 			debugFlag = flag;
 		}
+        /*
+         * LibNMeCab辞書のパスを設定
+         * @param dicPathFromExe()
+         */
+        public void SetDicPathFromExe(String dicPathFromExe)
+        {
+            this.dicPathFromExe = dicPathFromExe;
+        }
 		// コンソール表示用
 		public static void PrintDebug(string str)
 		{
@@ -146,7 +160,7 @@ namespace saga.voiceroid
 		 * @param hWnd メインウィンドウハンドル
 		 * @return 再生ボタンハンドル
 		 */
-		protected abstract IntPtr GetPlayButtonHandle(List<IntPtr> hWndList);
+        protected abstract IntPtr GetPlayButtonHandle(List<IntPtr> hWndList);
 		/*
 		 * 保存ボタンハンドルを取得
 		 * @param hWnd メインウィンドウハンドル
@@ -212,6 +226,49 @@ namespace saga.voiceroid
 			}
 			return SaveVoiceImpl(pathStr);
 		}
+        /*
+         * 再生時間を取得。音声テキストの長さから算出
+         * @param talkStr 音声テキスト
+         * @return 再生時間(ms)
+         */
+        protected int getInterval(String talkStr)
+        {
+            return getHiragana(talkStr).Length * 140;
+        }
+        /*
+         * 漢字から平仮名に変換
+         * @param 音声テキスト
+         * @return 平仮名文字列
+         */
+        protected String getHiragana(String talkStr)
+        {
+            MeCabParam param = new MeCabParam();
+            param.DicDir = this.dicPathFromExe;
+            MeCabTagger tagger = MeCabTagger.Create(param);
+            MeCabNode node = tagger.ParseToNode(talkStr);
+            String hiragana = "";
+            while (node != null)
+            {
+                if (node.CharType > 0)
+                {
+                    //PrintDebug(node.Surface + "/t" + node.Feature);
+                    String[] splitStrArray = node.Feature.Split(',');
+                    String splitStr;
+                    if (splitStrArray.Length < 9)
+                    {
+                        splitStr = node.Surface;
+                    }
+                    else
+                    {
+                        splitStr = splitStrArray[7];
+                    }
+                    hiragana = hiragana + splitStr;
+                }
+                node = node.Next;
+            }
+            PrintDebug(hiragana);
+            return hiragana;
+        }
 
 
 	}

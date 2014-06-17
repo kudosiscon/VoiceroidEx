@@ -31,7 +31,7 @@ namespace saga.voiceroid
 					ri = new ReadIniFile("set.ini", "DEFAULT");
 				}
 				// インスタンス化
-				VoiceroidNotify voiceroid = new VoiceroidNotify4Win7();
+                VoiceroidNotify voiceroid = new VoiceroidNotify4Win7("dic/ipadic");
 				// ウィンドウタイトルを設定
 				voiceroid.SetVoiceroidWindowTitle(ri.GetMainWindowName());
 				// 保存ダイアログのウィンドウ名を設定
