@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceroidExCSV", "Voiceroid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceroidExUDP", "VoiceroidExUDP\VoiceroidExUDP.csproj", "{1ECF75F3-4147-413F-9413-CAF93EFDC9A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceroidNotify", "VoiceroidNotify\VoiceroidNotify.csproj", "{D1519D89-540A-4F4A-9665-33A288237B8A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceroidNotifyCore", "VoiceroidNotifyCore\VoiceroidNotifyCore.csproj", "{D1519D89-540A-4F4A-9665-33A288237B8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

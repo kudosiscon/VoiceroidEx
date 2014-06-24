@@ -87,9 +87,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VoiceroidNotify\VoiceroidNotify.csproj">
+    <ProjectReference Include="..\VoiceroidNotifyCore\VoiceroidNotifyCore.csproj">
       <Project>{D1519D89-540A-4F4A-9665-33A288237B8A}</Project>
-      <Name>VoiceroidNotify</Name>
+      <Name>VoiceroidNotifyCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
