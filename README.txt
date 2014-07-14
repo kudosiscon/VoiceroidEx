@@ -1,7 +1,14 @@
-VoiceroidExは「VOICEROID」をコマンドラインから読み上げ・保存を行うためのツールです
+﻿VoiceroidExは「VOICEROID」をコマンドラインから読み上げ・保存を行うためのツールです
 動画作成等を補助するため作成
 
-Copyright 2013 @saga_dash
+本ソフトはNMeCab( http://sourceforge.jp/projects/nmecab/ )を使用しています。
+別途ダウンロードし、実行フォルダに
+・dic以下フォルダ
+・LibNMeCab.dll
+を配置してください。
+
+
+Copyright 2014 @saga_dash
 
  Apache License Version 2.0（「本ライセンス」）に基づいてライセンスされます。あなたが
 このファイルを使用するためには、本ライセンスに従わなければなりません。本ライセンスの
@@ -22,6 +29,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 動作確認環境
 	Microsoft® Windows® 7
 	.NET Framework 2.0
+	NMeCab 0.06.4
 
 
 事前設定
@@ -74,6 +82,11 @@ VoiceroidEx/VoiceroidEx.cs
 
 
 バージョン
+
+2014/07/15	1.3	NMeCabLibを使用し漢字から平仮名に変換し、読み上げ時間を計算し
+			待機する。
+
+2014/03/30	1.2	スレッド部を修正
 
 2013/06/19	1.1	実行ファイルとライブラリを分離
 
