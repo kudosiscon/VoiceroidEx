@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 using saga.util;
 
@@ -25,12 +24,6 @@ namespace saga.voiceroid
 		}
 		protected override IntPtr GetAddressToolbarHandle(List<IntPtr> hWndList)
 		{
-			/*
-			foreach (IntPtr a in hWndList)
-			{
-				Debug.WriteLine(a.ToString("X"));
-			}
-			*/
 			return hWndList[35];
 		}
 		protected override IntPtr GetFileNameTextBoxHandle(List<IntPtr> hWndList)
@@ -39,12 +32,6 @@ namespace saga.voiceroid
 		}
 		protected override IntPtr GetSaveButtonHandle(List<IntPtr> hWndList)
 		{
-			/*
-			foreach (IntPtr a in hWndList)
-			{
-				Debug.WriteLine(a.ToString("X"));
-			}
-			 */
 			return hWndList[19];
 		}
 		public override IntPtr SetPlayText(String talkStr)
@@ -98,9 +85,7 @@ namespace saga.voiceroid
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
 			IntPtr hOpenSaveWindowButton = GetOpenSaveWindowButtonHandle(mainWndSearch.GetList());
 
-			PrintDebug("---saveVoice---");
 			PrintDebug("hOpenSaveWindowButton: " + hOpenSaveWindowButton.ToString("X"));
-			PrintDebug("---------------");
 
 			// 保存ボタン押 保存ダイアログが立ち上がる
 			PostMessage(hOpenSaveWindowButton, WM_NULL, WM_NULL, WM_NULL);
@@ -113,7 +98,6 @@ namespace saga.voiceroid
 			IntPtr hFilenameTextBox = GetFileNameTextBoxHandle(saveWndSearch.GetList());
 			IntPtr hSaveButton = GetSaveButtonHandle(saveWndSearch.GetList());
 
-			PrintDebug("---saveVoice---");
 			PrintDebug("hWndSave: " + hWndSave.ToString("X"));
 			PrintDebug("hFilenameTextBox: " + hFilenameTextBox.ToString("X"));
 			PrintDebug("hSaveButton: " + hSaveButton.ToString("X"));

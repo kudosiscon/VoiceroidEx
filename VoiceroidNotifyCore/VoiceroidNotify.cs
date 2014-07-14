@@ -1,11 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-using saga.util;
-using NMeCab;
 
 namespace saga.voiceroid
 {
@@ -74,7 +71,7 @@ namespace saga.voiceroid
 		// デバッグフラグ
 		protected static bool debugFlag;
         // LibNMeCab辞書のパス
-        protected String dicPathFromExe;// = "dic/ipadic";
+        protected static String dicPathFromExe;// = "dic/ipadic";
         // 一字あたりの読み上げ時間ms
         protected UInt32 interval;
 
@@ -86,9 +83,9 @@ namespace saga.voiceroid
         {
 			this.VOICEROID_TITLE = "VOICEROID＋ 結月ゆかり";
 			this.SAVE_WINDOW_TITLE = "音声ファイルの保存";
-			forceOverWriteFlag = false;
-			debugFlag = false;
-            this.dicPathFromExe = dicPathFromExe;
+            VoiceroidNotify.forceOverWriteFlag = false;
+            VoiceroidNotify.debugFlag = false;
+            VoiceroidNotify.dicPathFromExe = dicPathFromExe;
             this.interval = 180;
         }
 		/*
@@ -113,7 +110,7 @@ namespace saga.voiceroid
 		 */
 		public void SetForceOverWriteFlag(bool flag)
 		{
-			forceOverWriteFlag = flag;
+            VoiceroidNotify.forceOverWriteFlag = flag;
 		}
 		/*
          * デバッグ表示ON
@@ -121,17 +118,16 @@ namespace saga.voiceroid
 		 */
 		public void SetDebugFlag(bool flag)
 		{
-			debugFlag = flag;
+            VoiceroidNotify.debugFlag = flag;
 		}
         /*
          * LibNMeCab辞書のパスを設定
-         * @param dicPathFromExe()
+         * @param dicPathFromExe
          */
         public void SetDicPathFromExe(String dicPathFromExe)
         {
-            this.dicPathFromExe = dicPathFromExe;
+            VoiceroidNotify.dicPathFromExe = dicPathFromExe;
         }
-		// コンソール表示用
         /*
          * 一字あたりの読み上げ時間を設定
          * @param interval
@@ -140,6 +136,7 @@ namespace saga.voiceroid
         {
             this.interval = interval;
         }
+        // コンソール表示用
 		public static void PrintDebug(string str)
 		{
 			if (!debugFlag)
@@ -224,7 +221,8 @@ namespace saga.voiceroid
 		 */
 		public IntPtr SaveVoice(String pathStr)
 		{
-			if (File.Exists(pathStr + ".wav"))
+            PrintDebug("---SaveVoice---");
+            if (File.Exists(pathStr + ".wav"))
 			{
 				if (forceOverWriteFlag)
 				{
@@ -253,30 +251,7 @@ namespace saga.voiceroid
          */
         protected String getHiragana(String talkStr)
         {
-            MeCabParam param = new MeCabParam();
-            param.DicDir = this.dicPathFromExe;
-            MeCabTagger tagger = MeCabTagger.Create(param);
-            MeCabNode node = tagger.ParseToNode(talkStr);
-            String hiragana = "";
-            while (node != null)
-            {
-                if (node.CharType > 0)
-                {
-                    //PrintDebug(node.Surface + "/t" + node.Feature);
-                    String[] splitStrArray = node.Feature.Split(',');
-                    String splitStr;
-                    if (splitStrArray.Length < 9)
-                    {
-                        splitStr = node.Surface;
-                    }
-                    else
-                    {
-                        splitStr = splitStrArray[7];
-                    }
-                    hiragana = hiragana + splitStr;
-                }
-                node = node.Next;
-            }
+            String hiragana = MeCabAdapter.GetHiragana(VoiceroidNotify.dicPathFromExe, talkStr);
             PrintDebug(hiragana);
             return hiragana;
         }

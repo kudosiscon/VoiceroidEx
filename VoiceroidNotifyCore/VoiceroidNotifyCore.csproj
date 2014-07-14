@@ -8,7 +8,7 @@
     <ProjectGuid>{D1519D89-540A-4F4A-9665-33A288237B8A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VoiceroidNotifyCore</RootNamespace>
+    <RootNamespace>saga.voiceroid</RootNamespace>
     <AssemblyName>VoiceroidNotifyCore</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MeCabAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VoiceroidNotify.cs" />
     <Compile Include="VoiceroidNotify4Win7.cs" />
