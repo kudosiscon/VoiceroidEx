@@ -42,7 +42,7 @@ namespace saga.voiceroid
 			PrintDebug("setText: " + talkStr);
 			PrintDebug("-----------------");
 
-			IntPtr hWndMain = mainWndSearch.GetList(-1);
+			IntPtr hWndMain = mainWndSearch.GetParentWindowHandle();
 
 			// メインウィンドウにコマンドを送りテキストを削除する
 			SendMessageSub(hWndMain, WM_COMMAND, ALLSELECT, WM_NULL);
@@ -69,7 +69,7 @@ namespace saga.voiceroid
 		public override IntPtr Play()
 		{
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
-			IntPtr hTalkButton = GetPlayButtonHandle(mainWndSearch.GetList());
+			IntPtr hTalkButton = GetPlayButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("---play---");
 			PrintDebug("hTalkButton: " + hTalkButton.ToString("X"));
@@ -83,7 +83,7 @@ namespace saga.voiceroid
 		protected override IntPtr SaveVoiceImpl(String pathStr)
 		{
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
-			IntPtr hOpenSaveWindowButton = GetOpenSaveWindowButtonHandle(mainWndSearch.GetList());
+			IntPtr hOpenSaveWindowButton = GetOpenSaveWindowButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("hOpenSaveWindowButton: " + hOpenSaveWindowButton.ToString("X"));
 
@@ -94,9 +94,9 @@ namespace saga.voiceroid
 
 			saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.SAVE_WINDOW_TITLE);
 
-			IntPtr hWndSave = saveWndSearch.GetList(-1);
-			IntPtr hFilenameTextBox = GetFileNameTextBoxHandle(saveWndSearch.GetList());
-			IntPtr hSaveButton = GetSaveButtonHandle(saveWndSearch.GetList());
+            IntPtr hWndSave = saveWndSearch.GetParentWindowHandle();
+			IntPtr hFilenameTextBox = GetFileNameTextBoxHandle(saveWndSearch.GetWindowHandleList());
+			IntPtr hSaveButton = GetSaveButtonHandle(saveWndSearch.GetWindowHandleList());
 
 			PrintDebug("hWndSave: " + hWndSave.ToString("X"));
 			PrintDebug("hFilenameTextBox: " + hFilenameTextBox.ToString("X"));

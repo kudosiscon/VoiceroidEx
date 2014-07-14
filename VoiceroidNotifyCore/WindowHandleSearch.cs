@@ -43,11 +43,18 @@ namespace saga.util
 			this.hWndList = new List<IntPtr>();
 			Update();
 		}
+        /*
+         * 親ウィンドウハンドルを取得
+         */
+        public IntPtr GetParentWindowHandle()
+        {
+            return hWnd;
+        }
 		/*
 		 * 子ウィンドウハンドルリストを取得
 		 * @return 子ウィンドウハンドルリスト
 		 */
-		public List<IntPtr> GetList()
+		public List<IntPtr> GetWindowHandleList()
 		{
 			return hWndList;
 		}
@@ -57,12 +64,8 @@ namespace saga.util
 		 * @throw IndexOutOfRangeException インデックスの範囲外です
 		 * @return ウィンドウハンドル -1:親ウィンドウハンドル
 		 */
-		public IntPtr GetList(int index)
+		public IntPtr GetWindowHandleList(int index)
 		{
-			if (index == -1)
-			{
-				return hWnd;
-			}
 			return hWndList[index];
 		}
 		// 子ハンドルのリスト更新
