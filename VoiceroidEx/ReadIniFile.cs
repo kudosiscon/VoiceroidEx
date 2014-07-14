@@ -19,6 +19,8 @@ namespace saga.file
 		private bool forceOverWriteFlag;
 		// デバッグ表示フラグ
 		private bool debugFlag;
+        // 一字あたりの読み上げ時間
+        private UInt32 interval;
 
 		[DllImport("KERNEL32.DLL")]
 		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
@@ -111,38 +113,56 @@ namespace saga.file
 			GetPrivateProfileString(
 				sectionStr, // セクション名
 				"FORCE_OVERWRITE", // キー名
-				"FALSE", // 値が取得できなかった場合
+                "NONE", // 値が取得できなかった場合
 				sb, // 格納先
 				Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
 				iniFilePath); // iniファイルパス
-			if (sb.ToString().Equals("TRUE"))
+            if (sb.ToString().Equals("NONE"))
 			{
 				//throw new NullReferenceException("IniFileにキー名「FORCE_OVERWRITE」が設定されていません。");
-				this.forceOverWriteFlag = true;
+				this.forceOverWriteFlag = false;
 			}
 			else
 			{
-				this.forceOverWriteFlag = false;
+                this.forceOverWriteFlag = bool.Parse(sb.ToString());
 			}
 
 			// キー名"DEBUG"の読み込み
 			GetPrivateProfileString(
 				sectionStr, // セクション名
 				"DEBUG", // キー名
-				"FALSE", // 値が取得できなかった場合
+                "NONE", // 値が取得できなかった場合
 				sb, // 格納先
 				Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
 				iniFilePath); // iniファイルパス
-			if (sb.ToString().Equals("TRUE"))
+            if (sb.ToString().Equals("NONE"))
 			{
 				//throw new NullReferenceException("IniFileにキー名「DEBUG」が設定されていません。");
-				this.debugFlag = true;
+				this.debugFlag = false;
 			}
 			else
 			{
-				this.debugFlag = false;
+                this.debugFlag = bool.Parse(sb.ToString());
 			}
-		}
+
+            // キー名"INTERVAL"の読み込み
+            GetPrivateProfileString(
+                sectionStr, // セクション名
+                "INTERVAL", // キー名
+                "140", // 値が取得できなかった場合
+                sb, // 格納先
+                Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
+                iniFilePath); // iniファイルパス
+            if (sb.ToString().Equals("TRUE"))
+            {
+                //throw new NullReferenceException("IniFileにキー名「DEBUG」が設定されていません。");
+                this.interval = 140;
+            }
+            else
+            {
+                this.interval = UInt32.Parse(sb.ToString());
+            }
+        }
 
 		public int GetPort()
 		{
@@ -168,5 +188,9 @@ namespace saga.file
 		{
 			return this.debugFlag;
 		}
+        public UInt32 GetInterval()
+        {
+            return this.interval;
+        }
 	}
 }

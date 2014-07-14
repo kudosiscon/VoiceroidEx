@@ -75,6 +75,8 @@ namespace saga.voiceroid
 		protected static bool debugFlag;
         // LibNMeCab辞書のパス
         protected String dicPathFromExe;// = "dic/ipadic";
+        // 一字あたりの読み上げ時間ms
+        protected UInt32 interval;
 
 		/*
 		 * コンストラクタ
@@ -87,6 +89,7 @@ namespace saga.voiceroid
 			forceOverWriteFlag = false;
 			debugFlag = false;
             this.dicPathFromExe = dicPathFromExe;
+            this.interval = 180;
         }
 		/*
 		 * メインウィンドウ名の設定
@@ -129,6 +132,14 @@ namespace saga.voiceroid
             this.dicPathFromExe = dicPathFromExe;
         }
 		// コンソール表示用
+        /*
+         * 一字あたりの読み上げ時間を設定
+         * @param interval
+         */
+        public void SetInterval(UInt32 interval)
+        {
+            this.interval = interval;
+        }
 		public static void PrintDebug(string str)
 		{
 			if (!debugFlag)
@@ -233,7 +244,7 @@ namespace saga.voiceroid
          */
         protected int getInterval(String talkStr)
         {
-            return getHiragana(talkStr).Length * 140;
+            return getHiragana(talkStr).Length * (int)this.interval;
         }
         /*
          * 漢字から平仮名に変換

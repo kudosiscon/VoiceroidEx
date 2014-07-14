@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 using saga.file;
 
@@ -40,6 +37,8 @@ namespace saga.voiceroid
 				voiceroid.SetForceOverWriteFlag(ri.GetForceOverWriteFlag());
 				// デバッグ表示フラグ設定
 				voiceroid.SetDebugFlag(ri.GetDebugFlag());
+                // 一字あたりの読み上げ時間を設定
+                voiceroid.SetInterval(ri.GetInterval());
 
 				// 音声テキストをテキストボックスに設定
 				voiceroid.SetPlayText(args[0]);
