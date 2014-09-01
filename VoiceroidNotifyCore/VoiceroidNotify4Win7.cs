@@ -14,29 +14,11 @@ namespace saga.voiceroid
         private static String talkString="";
         public VoiceroidNotify4Win7() : base(){ }
 		public VoiceroidNotify4Win7(String dicPathFromExe) : base(dicPathFromExe) { }
-		protected override IntPtr GetPlayButtonHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[9];
-		}
-		protected override IntPtr GetOpenSaveWindowButtonHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[7];
-		}
-		protected override IntPtr GetAddressToolbarHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[35];
-		}
-		protected override IntPtr GetFileNameTextBoxHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[3];
-		}
-		protected override IntPtr GetSaveButtonHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[19];
-		}
+        public VoiceroidNotify4Win7(String dicPathFromExe,VoiceroidInfo info) : base(dicPathFromExe, info) { }
+
 		public override IntPtr SetPlayText(String talkStr)
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 
 			PrintDebug("---setTalkText---");
 			PrintDebug("setText: " + talkStr);
@@ -68,7 +50,7 @@ namespace saga.voiceroid
         }
 		public override IntPtr Play()
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 			IntPtr hTalkButton = GetPlayButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("---play---");
@@ -76,13 +58,13 @@ namespace saga.voiceroid
 			PrintDebug("----------");
 
 			// VOCEROID ハングアップ用にTimeout設定し再生ボタン押
-            IntPtr result =  SendMessageSub(hTalkButton, WM_NULL, WM_NULL, WM_NULL);
-            System.Threading.Thread.Sleep(getInterval(talkString));
+            IntPtr result =  PostMessage(hTalkButton, WM_NULL, WM_NULL, WM_NULL);
+            System.Threading.Thread.Sleep(getInterval(talkString)+100);
             return result;
 		}
 		protected override IntPtr SaveVoiceImpl(String pathStr)
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 			IntPtr hOpenSaveWindowButton = GetOpenSaveWindowButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("hOpenSaveWindowButton: " + hOpenSaveWindowButton.ToString("X"));
@@ -92,7 +74,7 @@ namespace saga.voiceroid
 
 			System.Threading.Thread.Sleep(1500);
 
-			saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.SAVE_WINDOW_TITLE);
+			saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.voiceroidInfo.SaveWindowTitle);
 
             IntPtr hWndSave = saveWndSearch.GetParentWindowHandle();
 			IntPtr hFilenameTextBox = GetFileNameTextBoxHandle(saveWndSearch.GetWindowHandleList());

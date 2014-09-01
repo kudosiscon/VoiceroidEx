@@ -13,41 +13,10 @@ namespace saga.voiceroid
 	public class VoiceroidNotify4WinXP : VoiceroidNotify
 	{
 		public VoiceroidNotify4WinXP() : base() { }
-		protected override IntPtr GetPlayButtonHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[9];
-		}
-		protected override IntPtr GetOpenSaveWindowButtonHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[7];
-		}
-		protected override IntPtr GetAddressToolbarHandle(List<IntPtr> hWndList)
-		{
-			/*
-			foreach (IntPtr a in hWndList)
-			{
-				Debug.WriteLine(a.ToString("X"));
-			}
-			*/
-			return hWndList[35]; // TODO: research
-		}
-		protected override IntPtr GetFileNameTextBoxHandle(List<IntPtr> hWndList)
-		{
-			return hWndList[10];
-		}
-		protected override IntPtr GetSaveButtonHandle(List<IntPtr> hWndList)
-		{
-			/*
-			foreach (IntPtr a in hWndList)
-			{
-				Debug.WriteLine(a.ToString("X"));
-			}
-			 */
-			return hWndList[15];
-		}
+
 		public override IntPtr SetPlayText(String talkStr)
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 
 			PrintDebug("---setTalkText---");
 			PrintDebug("setText: " + talkStr);
@@ -70,7 +39,7 @@ namespace saga.voiceroid
 		}
 		public override IntPtr Play()
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+            saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 			IntPtr hTalkButton = GetPlayButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("---play---");
@@ -84,7 +53,7 @@ namespace saga.voiceroid
 		// TODO: 保存ダイアログのコンボボックスにファイルパスの入力がうまくいかないので修正要
 		protected override IntPtr SaveVoiceImpl(String pathStr)
 		{
-			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.VOICEROID_TITLE);
+            saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
 			IntPtr hOpenSaveWindowButton = GetOpenSaveWindowButtonHandle(mainWndSearch.GetWindowHandleList());
 
 			PrintDebug("---saveVoice---");
@@ -96,7 +65,7 @@ namespace saga.voiceroid
 
 			System.Threading.Thread.Sleep(1500);
 
-			saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.SAVE_WINDOW_TITLE);
+            saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.voiceroidInfo.SaveWindowTitle);
 
             IntPtr hWndSave = saveWndSearch.GetParentWindowHandle();
 			IntPtr hFilenameTextBox = GetFileNameTextBoxHandle(saveWndSearch.GetWindowHandleList());

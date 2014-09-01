@@ -28,17 +28,14 @@ namespace saga.voiceroid
 					ri = new ReadIniFile("set.ini", "DEFAULT");
 				}
 				// インスタンス化
-                VoiceroidNotify voiceroid = new VoiceroidNotify4Win7("dic/ipadic");
-				// ウィンドウタイトルを設定
-				voiceroid.SetVoiceroidWindowTitle(ri.GetMainWindowName());
-				// 保存ダイアログのウィンドウ名を設定
-				voiceroid.SetSaveWindowTitle(ri.GetSaveWindowName());
+                VoiceroidInfo info = VoiceroidFactory4Win7.CreateYukari();
+                VoiceroidNotify voiceroid = new VoiceroidNotify4Win7("dic/ipadic", info);
+
 				// 保存時に上書きを設定
 				voiceroid.SetForceOverWriteFlag(ri.GetForceOverWriteFlag());
 				// デバッグ表示フラグ設定
-				voiceroid.SetDebugFlag(ri.GetDebugFlag());
-                // 一字あたりの読み上げ時間を設定
-                voiceroid.SetInterval(ri.GetInterval());
+				//voiceroid.SetDebugFlag(ri.GetDebugFlag());
+                voiceroid.SetDebugFlag(true);
 
 				// 音声テキストをテキストボックスに設定
 				voiceroid.SetPlayText(args[0]);
