@@ -28,7 +28,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 動作確認環境
 	Microsoft® Windows® 7
-	.NET Framework 2.0
+	.NET Framework 3.5
 	NMeCab 0.06.4
 
 
