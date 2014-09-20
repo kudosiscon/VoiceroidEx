@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Windows.Forms;
 
 using saga.util;
 
@@ -16,6 +18,12 @@ namespace saga.voiceroid
 		public VoiceroidNotify4Win7(String dicPathFromExe) : base(dicPathFromExe) { }
         public VoiceroidNotify4Win7(String dicPathFromExe,VoiceroidInfo info) : base(dicPathFromExe, info) { }
 
+        private static string[] Formats = new string[]{
+            DataFormats.Bitmap,
+            DataFormats.Text,
+            DataFormats.WaveAudio,
+            DataFormats.FileDrop
+        };
 		public override IntPtr SetPlayText(String talkStr)
 		{
 			saga.util.WindowHandleSearch mainWndSearch = new WindowHandleSearch(this.voiceroidInfo.VoiceroidTitle);
@@ -24,29 +32,83 @@ namespace saga.voiceroid
 			PrintDebug("setText: " + talkStr);
 			PrintDebug("-----------------");
 
-			IntPtr hWndMain = mainWndSearch.GetParentWindowHandle();
-
 			// メインウィンドウにコマンドを送りテキストを削除する
-			SendMessageSub(hWndMain, WM_COMMAND, ALLSELECT, WM_NULL);
-			SendMessageSub(hWndMain, WM_COMMAND, CUT, WM_NULL);
+			IntPtr hWndMain = mainWndSearch.GetParentWindowHandle();
+            if (voiceroidInfo.SType == SystemType.Type1)
+            {
+                SendMessageSub(hWndMain, WM_COMMAND, ALLSELECT, WM_NULL);
+                SendMessageSub(hWndMain, WM_COMMAND, CUT, WM_NULL);
+            }
+            else
+            {
+                IntPtr hEdit = GetEditBoxHandle(mainWndSearch.GetWindowHandleList()); //GetMenu(hWndMain);
+                SendMessageSub(hEdit, new IntPtr(0x304), WM_NULL, WM_NULL);
+            }
+
 
 			// テキストをクリップボードに格納
-			System.Threading.Thread.Sleep(100);
-            talkString = talkStr;
-            System.Threading.Thread t = new System.Threading.Thread(SetClipboard);
-            t.SetApartmentState(System.Threading.ApartmentState.STA);
+            KeyValuePair<String,object> kvp = new KeyValuePair<string,object>();
+            Thread t = new Thread(delegate()
+            {
+                try { var obj = Clipboard.GetDataObject();
+                foreach (string item in obj.GetFormats(true))
+                {
+                    if(Array.IndexOf(Formats,item) >= 0){
+                        kvp = new KeyValuePair<string,object>(item, obj.GetData(item));
+                        break;
+                    }
+                }
+                }
+                catch (Exception e) { };
+            });
+            t.SetApartmentState(ApartmentState.STA);
             t.Start();
             t.Join();
-            System.Threading.Thread.Sleep(100);
+            talkString = talkStr;
+            t = new Thread(SetClipboard);
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start(talkStr);
+            t.Join();
+
 			// メインウィンドウにコマンドを送りテキストを貼り付け
-			return SendMessageSub(hWndMain, WM_COMMAND, PASTE, WM_NULL);
+            IntPtr result;
+            if (voiceroidInfo.SType == SystemType.Type1)
+            {
+                result = SendMessageSub(hWndMain, WM_COMMAND, PASTE, WM_NULL);
+            }
+            else
+            {
+                IntPtr hEdit = GetEditBoxHandle(mainWndSearch.GetWindowHandleList()); //GetMenu(hWndMain);
+                result = SendMessageSub(hEdit, WM_PASTE, WM_NULL, WM_NULL);
+            }
+
+            // 元データをクリップボードに格納
+            t = new Thread(SetClipboardWithKVP);
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start(kvp);
+            t.Join();
+
+            return result;
 		}
-        static void SetClipboard()
+        static void SetClipboard(Object obj)
         {
             bool copy = true;
             int retryTimes = 100;
-            int retryDelay=100;
-            System.Windows.Forms.Clipboard.SetDataObject(talkString, copy, retryTimes, retryDelay);
+            int retryDelay = 100;
+            Clipboard.SetDataObject((String)obj, copy, retryTimes, retryDelay);
+        }
+        static void SetClipboardWithKVP(Object obj)
+        {
+            KeyValuePair<string, object> kvp = (KeyValuePair<string, object>)obj;
+            try
+            {
+                if (kvp.Key == null)
+                {
+                    return;
+                }
+                Clipboard.SetData(kvp.Key, kvp.Value);
+            }
+            catch (Exception e) { };
         }
 		public override IntPtr Play()
 		{
@@ -58,8 +120,9 @@ namespace saga.voiceroid
 			PrintDebug("----------");
 
 			// VOCEROID ハングアップ用にTimeout設定し再生ボタン押
-            IntPtr result =  PostMessage(hTalkButton, WM_NULL, WM_NULL, WM_NULL);
-            System.Threading.Thread.Sleep(getInterval(talkString)+100);
+            IntPtr Msg = voiceroidInfo.SType == SystemType.Type1 ? WM_NULL : WM_CLICK;
+            IntPtr result = PostMessage(hTalkButton, Msg, WM_NULL, WM_NULL);
+            Thread.Sleep(getInterval(talkString) + 100);
             return result;
 		}
 		protected override IntPtr SaveVoiceImpl(String pathStr)
@@ -70,9 +133,10 @@ namespace saga.voiceroid
 			PrintDebug("hOpenSaveWindowButton: " + hOpenSaveWindowButton.ToString("X"));
 
 			// 保存ボタン押 保存ダイアログが立ち上がる
-			PostMessage(hOpenSaveWindowButton, WM_NULL, WM_NULL, WM_NULL);
+            IntPtr Msg = voiceroidInfo.SType == SystemType.Type1 ? WM_NULL : WM_CLICK;
+            PostMessage(hOpenSaveWindowButton, Msg, WM_NULL, WM_NULL);
 
-			System.Threading.Thread.Sleep(1500);
+			Thread.Sleep(1500);
 
 			saga.util.WindowHandleSearch saveWndSearch = new WindowHandleSearch(this.voiceroidInfo.SaveWindowTitle);
 
@@ -91,7 +155,7 @@ namespace saga.voiceroid
 			SendMessageSub(hFilenameTextBox, CB_ADDSTRING, WM_NULL, pathStr);
 			// 下キーを送信しPathを表示
 			SendMessageSub(hFilenameTextBox, WM_KEYDOWN, VK_DOWN, WM_NULL);
-			System.Threading.Thread.Sleep(100);
+			Thread.Sleep(100);
 
 			// 保存ボタンクリック
 			return PostMessage(hSaveButton, WM_CLICK, WM_NULL, WM_NULL);

@@ -7,7 +7,14 @@ namespace saga.voiceroid
     public enum VoiceroidType
     {
         Yukari,
-        Maki
+        //Maki,
+        Akane,
+        Aoi
+    }
+    public enum SystemType
+    {
+        Type1,
+        Type2
     }
     public sealed class VoiceroidInfo
     {
@@ -16,14 +23,16 @@ namespace saga.voiceroid
          */
         public VoiceroidInfo() {}
 
-        public VoiceroidInfo(VoiceroidType Type, string VoiceroidTitle, string SaveWindowTitle,
-            UInt32 Interval, int PlayButtonIndex, int OpenSaveWindowIndex, int AddressToolbarIndex,
+        public VoiceroidInfo(VoiceroidType Type, SystemType SystemType, string VoiceroidTitle, string SaveWindowTitle,
+            UInt32 Interval, int EditBoxIndex,int PlayButtonIndex, int OpenSaveWindowIndex, int AddressToolbarIndex,
             int FileNameTextBoxIndex, int SaveButtonIndex)
         {
             this.Type = Type;
+            this.SType = SystemType;
             this.VoiceroidTitle = VoiceroidTitle;
             this.SaveWindowTitle = SaveWindowTitle;
             this.Interval = Interval;
+            this.EditBoxIndex = EditBoxIndex; 
             this.PlayButtonIndex = PlayButtonIndex;
             this.OpenSaveWindowIndex = OpenSaveWindowIndex;
             this.AddressToolbarIndex = AddressToolbarIndex;
@@ -45,6 +54,13 @@ namespace saga.voiceroid
             set { _VoiceroidTitle = value; }
         }
 
+        private SystemType _SType;
+        public SystemType SType
+        {
+            get { return _SType; }
+            set { _SType = value; }
+        }
+
         private string _SaveWindowTitle;
         public string SaveWindowTitle
         {
@@ -57,6 +73,13 @@ namespace saga.voiceroid
         {
             get { return _Interval; }
             set { _Interval = value; }
+        }
+
+        private int _EditBoxIndex;
+        public int EditBoxIndex
+        {
+            get { return _EditBoxIndex; }
+            set { _EditBoxIndex = value; }
         }
 
         private int _PlayButtonIndex;

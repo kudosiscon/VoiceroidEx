@@ -61,6 +61,7 @@ namespace saga.voiceroid
 		protected static IntPtr WM_KEYDOWN = new IntPtr(0x100);
 		protected static IntPtr VK_DOWN = new IntPtr(0x28);
 		protected static IntPtr WM_CLICK = new IntPtr(0xf5);
+        protected static IntPtr WM_PASTE = new IntPtr(0x302);
 
         // voiceroid情報
         protected VoiceroidInfo voiceroidInfo;
@@ -146,11 +147,20 @@ namespace saga.voiceroid
 			return SendMessageTimeout(hWnd, (uint)Msg, wParam, lParam,
 				SendMessageTimeoutFlags.SMTO_ABORTIFHUNG, 1000, out temp);
 		}
-		/*
-		 * メインウィンドウの再生ボタンハンドルを取得
-		 * @param hWnd メインウィンドウハンドル
-		 * @return 再生ボタンハンドル
-		 */
+        /*
+         * メインウィンドウのエディットボックスハンドルを取得
+         * @param hWnd メインウィンドウハンドル
+         * @return エディットボックスハンドル
+         */
+        protected IntPtr GetEditBoxHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.EditBoxIndex];
+        }
+        /*
+         * メインウィンドウの再生ボタンハンドルを取得
+         * @param hWnd メインウィンドウハンドル
+         * @return 再生ボタンハンドル
+         */
         protected IntPtr GetPlayButtonHandle(List<IntPtr> hWndList)
         {
             return hWndList[voiceroidInfo.PlayButtonIndex];

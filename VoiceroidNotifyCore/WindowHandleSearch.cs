@@ -75,8 +75,14 @@ namespace saga.util
 			this.hWnd = GetWindowHandle(windowName);
 			if (hWnd.Equals((IntPtr)0))
 			{
-				string str = "\"" + windowName + "\"は起動していません";
-				throw new ApplicationException(str);
+                this.hWnd = GetWindowHandle(windowName+"*");
+                if (hWnd.Equals((IntPtr)0))
+                {
+
+                    string str = "\"" + windowName + "\"は起動していません";
+                    throw new ApplicationException(str);
+                }
+                this.windowName = windowName + "*";
 			}
 			GCHandle listHandle = GCHandle.Alloc(hWndList);
 			try
