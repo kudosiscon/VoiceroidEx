@@ -51,6 +51,10 @@ namespace saga.voiceroid
                     return CreateYukari();
             }
         }
+        public static VoiceroidInfo Create(string type)
+        {
+            return Create((VoiceroidType)(Enum.Parse(typeof(VoiceroidType), type)));
+        }
         public static VoiceroidInfo[] CreateAll()
         {
             VoiceroidInfo[] list = new VoiceroidInfo[Enum.GetNames(typeof(VoiceroidType)).Length];
