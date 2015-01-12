@@ -11,6 +11,11 @@ namespace saga.voiceroid
             return new VoiceroidInfo(VoiceroidType.Yukari, SystemType.Type1, "VOICEROID＋ 結月ゆかり",
                 "音声ファイルの保存", 180, -1, 9, 7, 35, 3, 19);
         }
+        public static VoiceroidInfo CreateYukariEx()
+        {
+            return new VoiceroidInfo(VoiceroidType.YukariEx, SystemType.Type2, "VOICEROID＋ 結月ゆかり EX",
+                "音声ファイルの保存", 180, 9, 12, 14, 35, 3, 19);
+        }
         /*
         public static VoiceroidInfo CreateMaki()
         {
@@ -34,6 +39,8 @@ namespace saga.voiceroid
             {
                 case VoiceroidType.Yukari:
                     return CreateYukari();
+                case VoiceroidType.YukariEx:
+                    return CreateYukariEx();
                 //case VoiceroidType.Maki:
                 //    return CreateMaki();
                 case VoiceroidType.Akane:

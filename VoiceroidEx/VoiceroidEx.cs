@@ -28,9 +28,9 @@ namespace saga.voiceroid
 					ri = new ReadIniFile("set.ini", "DEFAULT");
 				}
 				// インスタンス化
-                VoiceroidInfo info = VoiceroidFactory4Win7.CreateAoi();
+                //VoiceroidInfo info = VoiceroidFactory4Win7.CreateAoi();
                 //VoiceroidInfo info = VoiceroidFactory4Win7.CreateAkane();
-                //VoiceroidInfo info = VoiceroidFactory4Win7.CreateYukari();
+                VoiceroidInfo info = VoiceroidFactory4Win7.CreateYukariEx();
                 VoiceroidNotify voiceroid = new VoiceroidNotify4Win7("dic/ipadic", info);
 
 				// 保存時に上書きを設定

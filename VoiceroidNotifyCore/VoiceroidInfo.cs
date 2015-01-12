@@ -7,6 +7,7 @@ namespace saga.voiceroid
     public enum VoiceroidType
     {
         Yukari,
+        YukariEx,
         //Maki,
         Akane,
         Aoi
@@ -40,81 +41,17 @@ namespace saga.voiceroid
             this.SaveButtonIndex = SaveButtonIndex;
         }
 
-        private VoiceroidType _Type;
-        public VoiceroidType Type
-        {
-            get { return _Type; }
-            set { _Type = value; }
-        }
-
-        private string _VoiceroidTitle;
-        public string VoiceroidTitle
-        {
-            get { return _VoiceroidTitle; }
-            set { _VoiceroidTitle = value; }
-        }
-
-        private SystemType _SType;
-        public SystemType SType
-        {
-            get { return _SType; }
-            set { _SType = value; }
-        }
-
-        private string _SaveWindowTitle;
-        public string SaveWindowTitle
-        {
-            get { return _SaveWindowTitle; }
-            set { _SaveWindowTitle = value; }
-        }
-
-        private UInt32 _Interval;
-        public UInt32 Interval
-        {
-            get { return _Interval; }
-            set { _Interval = value; }
-        }
-
-        private int _EditBoxIndex;
-        public int EditBoxIndex
-        {
-            get { return _EditBoxIndex; }
-            set { _EditBoxIndex = value; }
-        }
-
-        private int _PlayButtonIndex;
-        public int PlayButtonIndex
-        {
-            get { return _PlayButtonIndex; }
-            set { _PlayButtonIndex = value; }
-        }
-
-        private int _OpenSaveWindowIndex;
-        public int OpenSaveWindowIndex
-        {
-            get { return _OpenSaveWindowIndex; }
-            set { _OpenSaveWindowIndex = value; }
-        }
-
-        private int _AddressToolbarIndex;
-        public int AddressToolbarIndex
-        {
-            get { return _AddressToolbarIndex; }
-            set { _AddressToolbarIndex = value; }
-        }
-        private int _FileNameTextBoxIndex;
-        public int FileNameTextBoxIndex
-        {
-            get { return _FileNameTextBoxIndex; }
-            set { _FileNameTextBoxIndex = value; }
-        }
-
-        private int _SaveButtonIndex;
-        public int SaveButtonIndex
-        {
-            get { return _SaveButtonIndex; }
-            set { _SaveButtonIndex = value; }
-        }
+        public VoiceroidType Type { get; set;}
+        public string VoiceroidTitle  { get; set;}
+        public SystemType SType { get; set; }
+        public string SaveWindowTitle { get; set; }
+        public UInt32 Interval { get; set; }
+        public int EditBoxIndex { get; set; }
+        public int PlayButtonIndex { get; set; }
+        public int OpenSaveWindowIndex { get; set; }
+        public int AddressToolbarIndex { get; set; }
+        public int FileNameTextBoxIndex { get; set; }
+        public int SaveButtonIndex { get; set; }
 
     }
 }
