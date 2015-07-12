@@ -19,6 +19,9 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
+    <NuGetPackageImportStamp>2d94142e</NuGetPackageImportStamp>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,7 +43,7 @@
   <ItemGroup>
     <Reference Include="LibNMeCab, Version=0.0.6.4, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\NMeCab0.06.4\bin\LibNMeCab.dll</HintPath>
+      <HintPath>..\packages\NMeCab.0.06.4\lib\LibNMeCab.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
@@ -61,7 +64,14 @@
     <Compile Include="VoiceroidNotify4WinXP.cs" />
     <Compile Include="WindowHandleSearch.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(TargetDir)*.*" "$(SolutionDir)VoiceroidEx\bin\$(ConfigurationName)"
+xcopy /Y /E "$(SolutionDir)packages\NMeCab.0.06.4\content\net45\dic" "$(SolutionDir)VoiceroidEx\bin\$(ConfigurationName)\dic\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
