@@ -61,48 +61,40 @@ namespace saga.voiceroid
 		protected static IntPtr WM_KEYDOWN = new IntPtr(0x100);
 		protected static IntPtr VK_DOWN = new IntPtr(0x28);
 		protected static IntPtr WM_CLICK = new IntPtr(0xf5);
+        protected static IntPtr WM_PASTE = new IntPtr(0x302);
 
-		// メインウィンドウ名
-		protected string VOICEROID_TITLE;// = "VOICEROID＋ 結月ゆかり";
-		// 保存ウィンドウ名
-		protected string SAVE_WINDOW_TITLE;// = "音声ファイルの保存";
+        // voiceroid情報
+        protected VoiceroidInfo voiceroidInfo;
 		// 強制上書きフラグ
 		protected static bool forceOverWriteFlag;
 		// デバッグフラグ
 		protected static bool debugFlag;
         // LibNMeCab辞書のパス
         protected static String dicPathFromExe;// = "dic/ipadic";
-        // 一字あたりの読み上げ時間ms
-        protected UInt32 interval;
 
 		/*
 		 * コンストラクタ
 		 */
 		public VoiceroidNotify():this("dic/ipadic") { }
-        public VoiceroidNotify(String dicPathFromExe)
+        public VoiceroidNotify(String dicPathFromExe):this(dicPathFromExe, null)
         {
-			this.VOICEROID_TITLE = "VOICEROID＋ 結月ゆかり";
-			this.SAVE_WINDOW_TITLE = "音声ファイルの保存";
+            VoiceroidInfo info = VoiceroidFactory4Win7.CreateYukari();
+            this.voiceroidInfo = info;
+        }
+        public VoiceroidNotify(String dicPathFromExe, VoiceroidInfo info)
+        {
+            this.voiceroidInfo = info;
             VoiceroidNotify.forceOverWriteFlag = false;
             VoiceroidNotify.debugFlag = false;
             VoiceroidNotify.dicPathFromExe = dicPathFromExe;
-            this.interval = 180;
         }
-		/*
-		 * メインウィンドウ名の設定
-		 * @param voiceroidWindowTitle メインウィンドウ名
-		 */
-		public void SetVoiceroidWindowTitle(String voiceroidWindowTitle)
+        /*
+         * Voiceroid情報の設定
+         * @param VoiceroidInfo Voiceroid情報
+         */
+        public void SetVoiceroidInfo(VoiceroidInfo info)
 		{
-			this.VOICEROID_TITLE = voiceroidWindowTitle;
-		}
-		/*
-		 * 保存ウィンドウ名を設定
-		 * @param saveWindowTitle 保存ウィンドウ名
-		 */
-		public void SetSaveWindowTitle(String saveWindowTitle)
-		{
-			this.SAVE_WINDOW_TITLE = saveWindowTitle;
+			this.voiceroidInfo = info;
 		}
 		/*
 		 * 強制上書き保存フラグを設定
@@ -127,14 +119,6 @@ namespace saga.voiceroid
         public void SetDicPathFromExe(String dicPathFromExe)
         {
             VoiceroidNotify.dicPathFromExe = dicPathFromExe;
-        }
-        /*
-         * 一字あたりの読み上げ時間を設定
-         * @param interval
-         */
-        public void SetInterval(UInt32 interval)
-        {
-            this.interval = interval;
         }
         // コンソール表示用
 		public static void PrintDebug(string str)
@@ -163,37 +147,57 @@ namespace saga.voiceroid
 			return SendMessageTimeout(hWnd, (uint)Msg, wParam, lParam,
 				SendMessageTimeoutFlags.SMTO_ABORTIFHUNG, 1000, out temp);
 		}
-		/*
-		 * メインウィンドウの再生ボタンハンドルを取得
-		 * @param hWnd メインウィンドウハンドル
-		 * @return 再生ボタンハンドル
-		 */
-        protected abstract IntPtr GetPlayButtonHandle(List<IntPtr> hWndList);
+        /*
+         * メインウィンドウのエディットボックスハンドルを取得
+         * @param hWnd メインウィンドウハンドル
+         * @return エディットボックスハンドル
+         */
+        protected IntPtr GetEditBoxHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.EditBoxIndex];
+        }
+        /*
+         * メインウィンドウの再生ボタンハンドルを取得
+         * @param hWnd メインウィンドウハンドル
+         * @return 再生ボタンハンドル
+         */
+        protected IntPtr GetPlayButtonHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.PlayButtonIndex];
+        }
 		/*
 		 * 保存ボタンハンドルを取得
 		 * @param hWnd メインウィンドウハンドル
 		 * @return 保存ボタンハンドル
 		 */
-		protected abstract IntPtr GetOpenSaveWindowButtonHandle(List<IntPtr> hWndList);
-		/*
+        protected IntPtr GetOpenSaveWindowButtonHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.OpenSaveWindowIndex];
+        }		/*
 		 * 保存ウィンドウのアドレスバーハンドルを取得
 		 * @param hWnd 保存ウィンドウハンドル
 		 * @return アドレスバーハンドル
 		 */
-		protected abstract IntPtr GetAddressToolbarHandle(List<IntPtr> hWndList);
-		/*
+        protected IntPtr GetAddressToolbarHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.AddressToolbarIndex];
+        }		/*
 		 * 保存ウィンドウのファイル名テキストボックスハンドルを取得
 		 * @param hWnd 保存ウィンドウハンドル
 		 * @return ファイル名テキストボックスハンドル
 		 */
-		protected abstract IntPtr GetFileNameTextBoxHandle(List<IntPtr> hWndList);
-		/*
+        protected IntPtr GetFileNameTextBoxHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.FileNameTextBoxIndex];
+        }		/*
 		 * 保存ウィンドウの保存ボタンハンドルを取得
 		 * @param hWnd 保存ウィンドウハンドル
 		 * @return 保存ボタンハンドル
 		 */
-		protected abstract IntPtr GetSaveButtonHandle(List<IntPtr> hWndList);
-		/*
+        protected IntPtr GetSaveButtonHandle(List<IntPtr> hWndList)
+        {
+            return hWndList[voiceroidInfo.SaveButtonIndex];
+        }		/*
 		 * テキストボックスに引数を設定
 		 * @param talkStr 音声テキスト
 		 * @throws ApplicationException Voiceroidが起動していません
@@ -242,7 +246,7 @@ namespace saga.voiceroid
          */
         protected int getInterval(String talkStr)
         {
-            return getHiragana(talkStr).Length * (int)this.interval;
+            return getHiragana(talkStr).Length * (int)this.voiceroidInfo.Interval;
         }
         /*
          * 漢字から平仮名に変換

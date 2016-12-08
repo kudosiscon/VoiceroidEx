@@ -28,7 +28,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 動作確認環境
 	Microsoft® Windows® 7
-	.NET Framework 2.0
+	.NET Framework 3.5
 	NMeCab 0.06.4
 
 
@@ -41,10 +41,8 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 	## 「VOICEROID」のウィンドウタイトル名
 	## デフォルトは結月ゆかり
-	MAIN_WINDOW_NAME=VOICEROID＋ 結月ゆかり
-
-	## 保存ダイアログのウィンドウタイトル名
-	SAVE_WINDOW_NAME=音声ファイルの保存
+	## 指定可能:Yukari,YukariEx,Akane,Aoi
+	VOICEROID_TYPE=Yukari
 
 	## 上書きを許可する TRUE or FALSE
 	FORCE_OVERWRITE=FALSE
@@ -79,17 +77,3 @@ VoiceroidEx/VoiceroidEx.cs
 
 現状のままではVOICEROIDの設定が一人しか出来ない等
 拡張性に乏しいので、、、
-
-
-バージョン
-
-2014/07/15	1.3	NMeCabLibを使用し漢字から平仮名に変換し、読み上げ時間を計算し
-			待機する。
-
-2014/03/30	1.2	スレッド部を修正
-
-2013/06/19	1.1	実行ファイルとライブラリを分離
-
-2013/03/16	1.0	リリース
-				Windows 7 のみ対応
-

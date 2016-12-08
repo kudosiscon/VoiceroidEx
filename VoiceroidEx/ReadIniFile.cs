@@ -10,17 +10,13 @@ namespace saga.file
 		// UDPポート
 		private int port;
 		// メインウィンドウ名 ゆかりorまきorEtc.
-		private string mainWindowName;
-		// 保存ウィンドウ名 対応用
-		private string saveWindowName;
+		private string voiceroidType;
 		// UDP通信+保存オプション 保存Path
 		private string savePath;
 		// 強制上書きフラグ
 		private bool forceOverWriteFlag;
 		// デバッグ表示フラグ
 		private bool debugFlag;
-        // 一字あたりの読み上げ時間
-        private UInt32 interval;
 
 		[DllImport("KERNEL32.DLL")]
 		public static extern uint GetPrivateProfileString(string lpAppName, string lpKeyName, string lpDefault, StringBuilder lpReturnedString, uint nSize, string lpFileName);
@@ -58,38 +54,21 @@ namespace saga.file
 				this.port = Int32.Parse(sb.ToString());
 			}
 
-			// キー名"MAIN_WINDOW_NAME"の読み込み
+            // キー名"VOICEROID_TYPE"の読み込み
 			GetPrivateProfileString(
 				sectionStr, // セクション名
-				"MAIN_WINDOW_NAME", // キー名
+                "VOICEROID_TYPE", // キー名
 				"NONE", // 値が取得できなかった場合
 				sb, // 格納先
 				Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
 				iniFilePath); // iniファイルパス
 			if (sb.ToString().Equals("NONE"))
 			{
-				throw new NullReferenceException("IniFileにキー名「MAIN_WINDOW_NAME」が設定されていません。");
+				throw new NullReferenceException("IniFileにキー名「VOICEROID_TYPE」が設定されていません。");
 			}
 			else
 			{
-				this.mainWindowName = sb.ToString();
-			}
-
-			// キー名"SAVE_WINDOW_NAME"の読み込み
-			GetPrivateProfileString(
-				sectionStr, // セクション名
-				"SAVE_WINDOW_NAME", // キー名
-				"NONE", // 値が取得できなかった場合
-				sb, // 格納先
-				Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
-				iniFilePath); // iniファイルパス
-			if (sb.ToString().Equals("NONE"))
-			{
-				//throw new NullReferenceException("IniFileにキー名「SAVE_WINDOW_NAME」が設定されていません。");
-			}
-			else
-			{
-				this.saveWindowName = sb.ToString();
+				this.voiceroidType = sb.ToString();
 			}
 
 			// キー名"SAVE_PATH"の読み込み
@@ -145,36 +124,15 @@ namespace saga.file
                 this.debugFlag = bool.Parse(sb.ToString());
 			}
 
-            // キー名"INTERVAL"の読み込み
-            GetPrivateProfileString(
-                sectionStr, // セクション名
-                "INTERVAL", // キー名
-                "140", // 値が取得できなかった場合
-                sb, // 格納先
-                Convert.ToUInt32(sb.Capacity), // 格納先のキャパ
-                iniFilePath); // iniファイルパス
-            if (sb.ToString().Equals("TRUE"))
-            {
-                //throw new NullReferenceException("IniFileにキー名「DEBUG」が設定されていません。");
-                this.interval = 140;
-            }
-            else
-            {
-                this.interval = UInt32.Parse(sb.ToString());
-            }
         }
 
 		public int GetPort()
 		{
 			return this.port;
 		}
-		public string GetMainWindowName()
+		public string GetVoiceroidType()
 		{
-			return this.mainWindowName;
-		}
-		public string GetSaveWindowName()
-		{
-			return this.saveWindowName;
+			return this.voiceroidType;
 		}
 		public string GetSavePath()
 		{
@@ -188,9 +146,5 @@ namespace saga.file
 		{
 			return this.debugFlag;
 		}
-        public UInt32 GetInterval()
-        {
-            return this.interval;
-        }
 	}
 }
